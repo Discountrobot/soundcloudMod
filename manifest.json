@@ -1,0 +1,18 @@
+{
+  "name": "Soundcloud group moderation",
+  "version": "0.5",
+  "description": "This extension helps group moderators of souncloud with 'front page players'",
+  "manifest_version": 2,
+  "icons": {
+    "48" : "icon-48.png",
+    "128" : "icon-128.png"
+  },  
+  "content_security_policy": "default-src 'self'",
+  "content_scripts": [
+    {
+      "matches": ["http://soundcloud.com/*","https://soundcloud.com/*"],
+      "js": ["jq.js","script.js"],
+      "run_at": "document_idle"
+    }
+  ]  
+}

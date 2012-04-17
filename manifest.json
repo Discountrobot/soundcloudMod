@@ -1,6 +1,6 @@
 {
   "name": "Soundcloud group moderation",
-  "version": "0.5",
+  "version": "0.6",
   "description": "This extension helps group moderators of souncloud with 'front page players'",
   "manifest_version": 2,
   "icons": {

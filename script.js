@@ -1,8 +1,9 @@
+// hide comments
 (function() {
 	$('li.player .player.mode').toggleClass('no-comments');
 })();	
 
-(function test () {
+(function() {
 	// create localStorage array if undefined
 	if(localStorage['scm_tracks'] === undefined) {
 		localStorage['scm_tracks']=JSON.stringify([]);
@@ -16,14 +17,18 @@
 			// parse the string to an array
 			moderatedTracks = JSON.parse(localStorage['scm_tracks']),
 			// is the track already in the db ? 
-			track = hasBeenModerated(moderatedTracks, id);
+			track = hasBeenModerated(moderatedTracks, id),
+			// init date obj
+			date = new Date(),
+			// create dateString 
+			dateString = dateString = date.getDate() + '/' + date.getMonth();
 		
 		if(! track) {
 			//create a new track
 			track = { 
 				'id': id,
-				'action': reason,
-				date: new Date().toDateString() 
+				'a': reason,
+				d: dateString
 			};
 			//push the track to the array.
 			moderatedTracks.push(track);
@@ -31,19 +36,19 @@
 		else {
 			//find the index of the existing track
 			var i = moderatedTracks.indexOf(track);
-			moderatedTracks[i].date = new Date().toDateString();
-			moderatedTracks[i].action = reason;
+			moderatedTracks[i].d = dateString
+			moderatedTracks[i].a = reason;
 		}
 
 		localStorage['scm_tracks'] = JSON.stringify(moderatedTracks);
 	}
 	// extend the soundcloud approve button click handle to save the track id.
 	$('a.approve.icon-button.contribution').click(function() {
-		moderateHandle(this, 'approved')
+		moderateHandle(this, 1)
 	});
-	// distroy 
+	// destroy 
 	$('a.destroy.icon-button.contribution.remove').click(function() {
-		moderateHandle(this, 'disapproved')
+		moderateHandle(this, 0)
 	});	
 
 	$('li.player').each(function() {
@@ -67,10 +72,11 @@
 				$inner.css('background' , 'lightCoral');
 
 				//get the track title
-				var track_title = $player.find('.info-header h3 a').text();
+				var track_title = $player.find('.info-header h3 a').text(),
+					action = track.a ? 'approved' : 'disapproved'
 
 				// forge the message
-				var $msg = $('<div></div>').html('<b>' + track_title + '</b> was last seen <b>' + track.date + '</b> and was <b>' + track.action + '</b>');
+				var $msg = $('<div></div>').html('<b>' + track_title + '</b> was last seen <b>' + track.d + '</b> and was <b>' + action + '</b>');
 				$msg.prependTo($inner);
 			}
 			else {
@@ -80,6 +86,7 @@
 		}
 	})
 
+	// checks an array with objects if the 'id' is present
 	function hasBeenModerated (arr,val) {
 		for(var i in arr) {
 			if(arr[i].id == val) {
